@@ -1,0 +1,46 @@
+<div class="row">
+    {% if user.is_authenticated %}
+        <div class="col-md-12">
+            <form class="form" role="form" method="post" action="/logout" accept-charset="UTF-8" id="login-nav">
+                {% csrf_token %}
+                {% if user.is_staff %}
+                    <div class="form-group">
+                        <a class="btn btn-warning btn-block" role="button" href="/real_role_admin">Админка</a>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <a class="btn btn-primary btn-block" role="button" href="/cabinet">Личный кабинет</a>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-danger btn-sm btn-block">Выйти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-md-12">
+        <form class="form" role="form" method="post" action="/login?next={{request.path}}" accept-charset="UTF-8"
+              id="login-nav">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="sr-only" for="input_email">Email/логин</label>
+                <input class="form-control" id="input_email" name="email" placeholder="Email/логин"
+                       required>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="input_password">Пароль</label>
+                <input type="password" class="form-control" id="input_password" name="password" placeholder="Пароль"
+                       required>
+                <div class="help-block text-right"><a href="/password_reset/">Забыли пароль?</a></div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">Войти
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="bottom text-center">
+        Впервые тут? <a href="/registration"><b>Зарегистрируйтесь!</b></a>
+    </div>
+    {% endif %}
+</div>

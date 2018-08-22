@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head_content.html" %}
+    {% load static %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}"
+          rel="stylesheet">
+
+    <style>
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            /* Margin bottom by footer height */
+            margin-bottom: 60px;
+        }
+
+        #footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: 35px;
+            background-color: #f5f5f5;
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <title>{% block title %}Очно-заочная школа{% endblock %}</title>
+
+    {% block style %}
+    {% endblock %}
+
+</head>
+<body>
+{% include "components/navigation.html" %}
+
+<!-- Page Content -->
+{% block content %}
+{% endblock %}
+
+
+{% include "components/footer.html" %}
+
+<!-- Bootstrap core JavaScript -->
+<script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+<script src="{% static "vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+    
+{% block scripts %}
+{% endblock %}
+</body>
+</html>

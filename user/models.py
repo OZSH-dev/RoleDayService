@@ -4,10 +4,8 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class RoleUser(AbstractUser):
-    first_name = models.TextField(verbose_name="Имя")
-    last_name = models.TextField(verbose_name="Фамилия")
-    squad = models.PositiveSmallIntegerField(verbose_name="Отряд")
-    money = models.IntegerField(verbose_name="Кол-во валюты")
+    squad = models.PositiveSmallIntegerField(verbose_name="Отряд", default=0)
+    money = models.IntegerField(verbose_name="Кол-во валюты", default=0)
 
     class Meta:
         verbose_name = 'Пользователь'
