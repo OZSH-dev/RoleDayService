@@ -10,3 +10,4 @@ class Transaction(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, verbose_name="Покупка")
     reverted = models.BooleanField(default=False)
     creation_date = models.DateTimeField(auto_now_add=True)
+    given = models.BooleanField(default=False)

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from .git_helpers import get_git_revision_short_hash, get_git_revision_num
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -66,10 +67,19 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'RoleDayService.context_processors.commit_info'
             ],
         },
     },
 ]
+
+COMMIT_NUM = 0
+COMMIT_HASH = ""
+try:
+    COMMIT_NUM = int(get_git_revision_num().strip())
+    COMMIT_HASH = get_git_revision_short_hash().strip().decode()
+except Exception:
+    pass
 
 WSGI_APPLICATION = 'RoleDayService.wsgi.application'
 

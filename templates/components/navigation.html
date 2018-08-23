@@ -14,10 +14,7 @@
                     <a class="nav-link" href="/">Главная</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contacts">Контакты</a>
-                </li>
-                <li class="nav-item">
-                    <p>{{ user. }}</p>
+                    <a class="nav-link" href="/cart">Мои покупки</a>
                 </li>
 
                 <li class="nav-item dropdown">
@@ -27,7 +24,7 @@
                            aria-haspopup="true"
                            aria-expanded="false"
                            class="dropdown-toggle nav-link"
-                           data-toggle="dropdown">{{ user.last_name }} {{ user.first_name }}</a>
+                           data-toggle="dropdown">{{ user.last_name }} {{ user.first_name }} ({{ user.money }} ₪)</a>
                     {% else %}
                         <a href="#" id="navbarDropdown"
                            role="button"

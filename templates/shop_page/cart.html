@@ -4,14 +4,14 @@
     <link href="{% static "/css/blog-post.css" %}" rel="stylesheet">
 {% endblock %}
 
-{% block title %}День ролей - Магазин{% endblock %}
+{% block title %}День ролей - Покупки{% endblock %}
 
 {% block content %}
     <div class="container">
 
         <!-- Page Heading/Breadcrumbs -->
         <h1 class="mt-4 mb-3">День ролей
-            <small>Магазин</small>
+            <small>Покупки</small>
         </h1>
         <div class="row">
             {% for item in items %}
@@ -25,13 +25,8 @@
                             <p class="card-text">{{ item.description }}</p>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">На складе <b>{{ item.amount }}</b> шт.</li>
+                            <li class="list-group-item">Стоимость <b>{{ item.price }}</b> ₪.</li>
                         </ul>
-                        <form action="/buy" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="item_id" value="{{ item.id }}">
-                            <input type="submit" class="btn btn-success" value="Купить за {{ item.price }} ₪">
-                        </form>
                     </div>
                 </div>
             {% endfor %}
