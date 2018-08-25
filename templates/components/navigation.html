@@ -11,11 +11,13 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Главная</a>
+                    <a class="nav-link" href="/">Магазин</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/cart">Мои покупки</a>
-                </li>
+                {% if user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/transactions">Список транзакций</a>
+                    </li>
+                {% endif %}
 
                 <li class="nav-item dropdown">
                     {% if user.is_authenticated %}

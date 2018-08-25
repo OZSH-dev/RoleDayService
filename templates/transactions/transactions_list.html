@@ -1,0 +1,122 @@
+{% extends "components/static_page.html" %}
+{% load static %}
+{% block style %}
+    <link href="{% static "/css/blog-post.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}День ролей - Транзакции{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mt-4 mb-3">День ролей
+            <small>Список всех транзакций</small>
+        </h1>
+
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Покупатель</th>
+                <th scope="col">Вещь</th>
+                <th scope="col">Стоимость</th>
+                <th scope="col">Дата создания</th>
+                <th scope="col">Выдача</th>
+                <th scope="col">Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for transaction in transactions %}
+                <tr>
+                    <th scope="row">{{ transaction.id }}</th>
+                    <td>{{ transaction.caller }}</td>
+                    <td>{{ transaction.item.short_name }}</td>
+                    <td>{{ transaction.item.price }}</td>
+                    <td>{{ transaction.creation_date }}</td>
+                    {% if transaction.given %}
+                        <td><span class="badge badge-success">Выдано</span></td>
+                        <td>-</td>
+                    {% else %}
+                        <td><span class="badge badge-warning">Ожидает выдачи</span></td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button class="btn btn-success btn-sm">
+                                    Выдать
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    Откатить
+                                </button>
+                            </div>
+                        </td>
+                    {% endif %}
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+let csrftoken = getCookie('csrftoken');
+
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+function handle_button(event) {
+    let button_data = event.srcElement.id.split("_");
+    let ticket_id = button_data[0];
+    let state = button_data[1];
+    $.ajax({
+        type: "POST",
+        url: "/transactions/modify",
+        data: {"ticket_id": ticket_id, "state": state},
+        success: function (data) {
+        if (data["update"] === "ok") {
+            let ticket_row = $("#" + ticket_id);
+            let first_button = $("#" + ticket_id + "_1");
+            let second_button = $("#" + ticket_id + "_2");
+            let state_row = $("#" + ticket_id + "_state");
+            if (state === "1"){
+                ticket_row.addClass("table-success").removeClass("table-warning").removeClass("table-danger");
+                first_button.hide();
+                second_button.show();
+                state_row.html("Принята");
+            } else if (state === "2") {
+                ticket_row.removeClass("table-warning").addClass("table-danger");
+                first_button.show();
+                second_button.hide();
+                state_row.html("Отклонена");
+            }
+        }}});
+}
+</script>
+{% endblock %}

@@ -22,5 +22,8 @@ class Item(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
+    def short_name(self):
+        return self.name
+
     def __str__(self):
         return "{} ({} шт)".format(self.name, self.amount)

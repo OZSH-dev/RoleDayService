@@ -9,14 +9,13 @@
                     </div>
                 {% endif %}
                 <div class="form-group">
-                    <a class="btn btn-primary btn-block" role="button" href="/cabinet">Личный кабинет</a>
+                    <a class="btn btn-primary btn-block" role="button" href="/cart">Мои покупки</a>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-danger btn-sm btn-block">Выйти</button>
                 </div>
             </form>
         </div>
-    </div>
     {% else %}
     <div class="col-md-12">
         <form class="form" role="form" method="post" action="/login?next={{request.path}}" accept-charset="UTF-8"
