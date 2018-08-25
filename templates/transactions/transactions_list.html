@@ -32,17 +32,23 @@
                     <td>{{ transaction.item.short_name }}</td>
                     <td>{{ transaction.item.price }}</td>
                     <td>{{ transaction.creation_date }}</td>
-                    {% if transaction.given %}
+                    {% if transaction.state == 1 %}
                         <td><span class="badge badge-success">Выдано</span></td>
                         <td>-</td>
+                    {% elif transaction.state == 2 %}
+                        <td><span class="badge badge-danger">Отменено</span></td>
+                        <td>-</td>
                     {% else %}
-                        <td><span class="badge badge-warning">Ожидает выдачи</span></td>
+                        <td>
+                            <span id="{{ transaction.id }}_state" class="badge badge-warning">Ожидает выдачи</span></td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <button class="btn btn-success btn-sm">
+                                <button id="{{ transaction.id }}_1" class="btn btn-success btn-sm"
+                                        onclick="handle_button(event)">
                                     Выдать
                                 </button>
-                                <button class="btn btn-danger btn-sm">
+                                <button id="{{ transaction.id }}_2" class="btn btn-danger btn-sm"
+                                        onclick="handle_button(event)">
                                     Откатить
                                 </button>
                             </div>
@@ -58,65 +64,68 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        let cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
             }
+            return cookieValue;
         }
-    }
-    return cookieValue;
-}
 
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-
-let csrftoken = getCookie('csrftoken');
-
-
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
-    }
-});
 
-function handle_button(event) {
-    let button_data = event.srcElement.id.split("_");
-    let ticket_id = button_data[0];
-    let state = button_data[1];
-    $.ajax({
-        type: "POST",
-        url: "/transactions/modify",
-        data: {"ticket_id": ticket_id, "state": state},
-        success: function (data) {
-        if (data["update"] === "ok") {
-            let ticket_row = $("#" + ticket_id);
-            let first_button = $("#" + ticket_id + "_1");
-            let second_button = $("#" + ticket_id + "_2");
-            let state_row = $("#" + ticket_id + "_state");
-            if (state === "1"){
-                ticket_row.addClass("table-success").removeClass("table-warning").removeClass("table-danger");
-                first_button.hide();
-                second_button.show();
-                state_row.html("Принята");
-            } else if (state === "2") {
-                ticket_row.removeClass("table-warning").addClass("table-danger");
-                first_button.show();
-                second_button.hide();
-                state_row.html("Отклонена");
+        let csrftoken = getCookie('csrftoken');
+
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
             }
-        }}});
-}
-</script>
+        });
+
+        function handle_button(event) {
+            let button_data = event.srcElement.id.split("_");
+            let transaction_id = button_data[0];
+            let state = button_data[1];
+            $.ajax({
+                type: "POST",
+                url: "/transactions/modify",
+                data: {"id": transaction_id, "state": state},
+                success: function (data) {
+                    if (data["state"] > 0) {
+                        let first_button = $("#" + transaction_id + "_1");
+                        let second_button = $("#" + transaction_id + "_2");
+                        let state_row = $("#" + transaction_id + "_state");
+                        state_row.removeClass("badge-warning");
+                        console.log(transaction_id, state);
+                        if (data["state"] === 1) {
+                            state_row.addClass("badge-success");
+                            first_button.hide();
+                            second_button.hide();
+                            state_row.html("Выдано");
+                        } else if (data["state"] === 2) {
+                            state_row.addClass("badge-danger");
+                            first_button.hide();
+                            second_button.hide();
+                            state_row.html("Отменено");
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 {% endblock %}

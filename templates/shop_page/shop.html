@@ -33,7 +33,7 @@
                         <form action="/buy" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="item_id" value="{{ item.id }}">
-                            <input type="submit" class="btn btn-success" value="Купить за {{ item.price }} ₪">
+                            <input type="submit" class="btn btn-block btn-success" value="Купить за {{ item.price }} ₪">
                         </form>
                     </div>
                 </div>
