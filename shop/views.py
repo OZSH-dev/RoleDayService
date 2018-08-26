@@ -15,7 +15,8 @@ def get_already_bought_item_ids_set(user):
 @login_required(login_url="/login")
 def index(request):
     user_single_items = get_already_bought_item_ids_set(request.user)
-    items_to_sell = Item.objects.filter(~Q(id__in=user_single_items) | ~Q(transaction__state__lt=2)).filter(amount__gt=0)
+    items_to_sell = Item.objects.filter(~Q(id__in=user_single_items) | ~Q(transaction__state__lt=2))\
+        .filter(amount__gt=0)
     return render(request, "shop_page/shop.html", {"items": items_to_sell})
 
 

@@ -1,6 +1,20 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
 from user.models import RoleUser
+from django.contrib.admin.views.decorators import staff_member_required
+
+
+@staff_member_required
+def get_user_reg_page(request):
+    username = request.GET["login"]
+    password = request.GET["password"]
+    RoleUser.objects.create_user(
+        username,
+        username,
+        password
+    )
+    return JsonResponse({"login": username, "passwd": password})
 
 
 def auth(request):

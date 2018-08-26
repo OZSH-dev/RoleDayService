@@ -24,8 +24,12 @@
                             {% endif %}
                         </h5>
                         <a href="#"><img class="card-img-top" src="/media/{{ transaction.item.image }}" alt=""></a>
-                        <div class="card-body">
+                        <div class="card-body text-center">
+                            {% if transaction.item.hidden_description %}
+                            <a href="{{ transaction.item.description }}">Читать...</a>
+                            {% else %}
                             <p class="card-text">{{ transaction.item.description }}</p>
+                            {% endif %}
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Стоимость <b>{{ transaction.item.price }}</b> ₪.</li>

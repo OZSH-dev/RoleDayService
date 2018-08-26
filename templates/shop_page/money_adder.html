@@ -1,0 +1,38 @@
+{% extends "components/static_page.html" %}
+{% load static %}
+{% block style %}
+    <link href="{% static "/css/blog-post.css" %}" rel="stylesheet">
+    <style>
+            .card-login {
+            max-width: 35rem;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}День ролей - Начисление валюты{% endblock %}
+
+{% block content %}
+    <div class="container pt-5">
+        <div class="card card-login mx-auto mt-5">
+            <div class="card-header text-center h3">Начисление валюты</div>
+            <div class="card-body">
+                <form method="post" action="/transactions/money_adder">{% csrf_token %}
+                    <div class="form-group">
+                        <label for="team"></label>
+                        <select name="team" id="team" class="form-control">
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Сумма</label>
+                        <input class="form-control" name="sum" id="sum"
+                               placeholder="Сумма для начисления (1, 10, 100, 200, итд)">
+                    </div>
+                    <button class="btn btn-success btn-block" type="submit">Начислить ₪</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

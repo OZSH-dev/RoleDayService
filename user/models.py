@@ -2,9 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
-# Create your models here.
 class RoleUser(AbstractUser):
-    squad = models.PositiveSmallIntegerField(verbose_name="Отряд", default=0)
     money = models.IntegerField(verbose_name="Кол-во валюты", default=0)
 
     class Meta:
@@ -13,5 +11,5 @@ class RoleUser(AbstractUser):
         ordering = ["last_name", "first_name"]
 
     def __str__(self):
-        return "{} {} {} ({})".format(
-            self.last_name, self.first_name, self.squad, self.money)
+        return "{} {} ({})".format(
+            self.last_name, self.first_name, self.money)

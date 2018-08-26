@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from bank.models import Transaction
 from shop.models import Item
 from user.models import RoleUser
@@ -15,6 +15,24 @@ def transactions(request):
             "transactions": reversed(Transaction.objects.all())
         }
     )
+
+
+@staff_member_required(login_url="/login")
+def add_money(request):
+    return render(
+        request,
+        "shop_page/money_adder.html",
+        {"users": RoleUser.objects.all()}
+    )
+
+
+@staff_member_required(login_url="/login")
+def money_adder(request):
+    team_id = int(request.POST["team"])
+    money_sum = request.POST["sum"]
+    result_money = RoleUser.objects.get(id=team_id).money + max(0, int(money_sum))
+    RoleUser.objects.filter(id=team_id).update(money=result_money)
+    return redirect("/transactions/add_money")
 
 
 @staff_member_required(login_url="/login")
