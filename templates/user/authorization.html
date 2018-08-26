@@ -1,0 +1,43 @@
+{% extends "components/static_page.html" %}
+
+{% block title %}ОЗШ: День ролей - Авторизация{% endblock %}
+
+{% block style %}
+    <style>
+    .card-login {
+        max-width: 25rem;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+  <div class="container pt-5">
+    <div class="card card-login mx-auto mt-5">
+      <div class="card-header text-center h3">Авторизация</div>
+      <div class="card-body">
+        <form method="post" action="/auth?next={{ next }}">{% csrf_token %}
+            {% if bad_cred %}
+                <div class="form-group">
+                    <div class="alert alert-danger">Неверный email/логин или пароль!</div>
+                </div>
+            {% endif %}
+            {% if need_auth %}
+                <div class="form-group">
+                    <div class="alert alert-info">Для доступа к запрашиваемой странице требуется авторизация!</div>
+                </div>
+            {% endif %}
+          <div class="form-group">
+            <label for="email">Логин</label>
+            <input class="form-control"
+                   name="login" id="login" placeholder="Логин">
+          </div>
+          <div class="form-group">
+            <label for="password">Пароль</label>
+            <input class="form-control" name="password" id="password" type="password" placeholder="Пароль">
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Войти</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

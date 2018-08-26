@@ -10,34 +10,27 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Магазин</a>
-                </li>
-                {% if user.is_staff %}
+                {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/transactions">Список транзакций</a>
+                        <a class="nav-link" href="/">Магазин</a>
                     </li>
-                {% endif %}
-
-                <li class="nav-item dropdown">
-                    {% if user.is_authenticated %}
-                        <a href="#" id="navbarDropdown"
-                           role="button"
-                           aria-haspopup="true"
-                           aria-expanded="false"
-                           class="dropdown-toggle nav-link"
-                           data-toggle="dropdown">{{ user.last_name }} {{ user.first_name }} ({{ user.money }} ₪)</a>
-                    {% else %}
-                        <a href="#" id="navbarDropdown"
-                           role="button"
-                           aria-haspopup="true"
-                           aria-expanded="false"
-                           class="dropdown-toggle nav-link"
-                           data-toggle="dropdown">Вход</a>
+                    {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/transactions">Список транзакций</a>
+                        </li>
                     {% endif %}
-                    <div id="login-dp" aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-right">
-                        {% include "components/navbar_dropdown.html" %}
-                    </div>
+
+                    <li class="nav-item dropdown">
+                    <a href="#" id="navbarDropdownWithMoney"
+                       role="button"
+                       aria-haspopup="true"
+                       aria-expanded="false"
+                       class="dropdown-toggle nav-link"
+                       data-toggle="dropdown">{{ user.last_name }} {{ user.first_name }} ({{ user.money }} ₪)</a>
+                {% endif %}
+                <div id="login-dp" aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-right">
+                    {% include "components/navbar_dropdown.html" %}
+                </div>
                 </li>
             </ul>
         </div>

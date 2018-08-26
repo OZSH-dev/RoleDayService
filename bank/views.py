@@ -6,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, HttpResponseBadRequest
 
 
-@staff_member_required
+@staff_member_required(login_url="/login")
 def transactions(request):
     return render(
         request,
@@ -17,7 +17,7 @@ def transactions(request):
     )
 
 
-@staff_member_required
+@staff_member_required(login_url="/login")
 def modify_transaction_state(request):  # id & state -> ok
     transaction_id = request.POST.get("id")
     accept = request.POST.get("state")

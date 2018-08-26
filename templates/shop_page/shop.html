@@ -4,12 +4,12 @@
     <link href="{% static "/css/blog-post.css" %}" rel="stylesheet">
 {% endblock %}
 
-{% block title %}День ролей - Магазин{% endblock %}
+{% block title %}
+    День ролей - Магазин
+{% endblock %}
 
 {% block content %}
     <div class="container">
-
-        <!-- Page Heading/Breadcrumbs -->
         <h1 class="mt-4 mb-3">День ролей
             <small>Магазин</small>
         </h1>
@@ -40,4 +40,64 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+
+{% block scripts %}
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        let csrftoken = getCookie('csrftoken');
+
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        function handle_button(event) {
+            let button_data = event.srcElement.id.split("_");
+            let item_id = button_data[1];
+            $.ajax({
+                type: "POST",
+                url: "/buy",
+                data: {"id": item_id},
+                success: function (data) {
+                    if (data["state"] > 0) {
+                        let moneyHeader = $("#navbarDropdownWithMoney");
+                        let second_button = $("#item" + "_2");
+                        if (data["state"] === 1) {
+                            first_button.hide();
+                            second_button.hide();
+                        } else if (data["state"] === 2) {
+                            first_button.hide();
+                            second_button.hide();
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 {% endblock %}

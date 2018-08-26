@@ -12,14 +12,14 @@ def get_already_bought_item_ids_set(user):
     return frozenset(x.item.id for x in Transaction.objects.filter(caller=user, item__single_buy=True))
 
 
-@login_required
+@login_required(login_url="/login")
 def index(request):
     user_single_items = get_already_bought_item_ids_set(request.user)
     items_to_sell = Item.objects.filter(~Q(id__in=user_single_items) | ~Q(transaction__state__lt=2))
     return render(request, "shop_page/shop.html", {"items": items_to_sell})
 
 
-@login_required
+@login_required(login_url="/login")
 def buy(request):
     user = request.user
     item_id = request.POST.get("item_id")
@@ -37,10 +37,8 @@ def buy(request):
     return JsonResponse({"state": 1, "current_money": user.money-item.price})
 
 
-@login_required
+@login_required(login_url="/login")
 def cart(request):
     return render(request, "shop_page/cart.html", {
         "items": [x for x in Transaction.objects.filter(caller=request.user, state__lt=2).all()]
     })
-
-

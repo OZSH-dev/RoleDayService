@@ -111,7 +111,6 @@
                         let second_button = $("#" + transaction_id + "_2");
                         let state_row = $("#" + transaction_id + "_state");
                         state_row.removeClass("badge-warning");
-                        console.log(transaction_id, state);
                         if (data["state"] === 1) {
                             state_row.addClass("badge-success");
                             first_button.hide();
