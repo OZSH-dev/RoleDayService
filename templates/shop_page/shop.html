@@ -28,13 +28,16 @@
                             <p class="card-text">{{ item.description }}</p>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">На складе <b>{{ item.amount }}</b> шт.</li>
+                            <li class="list-group-item">На складе <b id="amount_{{ item.id }}">{{ item.amount }}</b> шт.</li>
                         </ul>
-                        <form action="/buy" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="item_id" value="{{ item.id }}">
-                            <input type="submit" class="btn btn-block btn-success" value="Купить за {{ item.price }} ₪">
-                        </form>
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <input id="item_{{ item.id }}" type="submit"
+                               class="btn btn-block btn-success" value="Купить за {{ item.price }} ₪"
+                               onclick="handle_button(event)"
+                        {% if user.money < item.price %}
+                            disabled
+                        {% endif %}
+                        >
                     </div>
                 </div>
             {% endfor %}
@@ -83,17 +86,16 @@
             $.ajax({
                 type: "POST",
                 url: "/buy",
-                data: {"id": item_id},
+                data: {"item_id": item_id},
                 success: function (data) {
-                    if (data["state"] > 0) {
+                    if (data["state"] >= 0) {
                         let moneyHeader = $("#navbarDropdownWithMoney");
-                        let second_button = $("#item" + "_2");
-                        if (data["state"] === 1) {
-                            first_button.hide();
-                            second_button.hide();
-                        } else if (data["state"] === 2) {
-                            first_button.hide();
-                            second_button.hide();
+                        let amountHandler = $("#amount_" + item_id);
+                        if (data["state"] === 1){
+                            let money_field = moneyHeader[0].text.split(" ");
+                            money_field[2] = "(" + data["current_money"];
+                            amountHandler.html(data["amount"]);
+                            moneyHeader.html(money_field.join(" "));
                         }
                     }
                 }

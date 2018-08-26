@@ -15,7 +15,7 @@ def get_already_bought_item_ids_set(user):
 @login_required(login_url="/login")
 def index(request):
     user_single_items = get_already_bought_item_ids_set(request.user)
-    items_to_sell = Item.objects.filter(~Q(id__in=user_single_items) | ~Q(transaction__state__lt=2))
+    items_to_sell = Item.objects.filter(~Q(id__in=user_single_items) | ~Q(transaction__state__lt=2)).filter(amount__gt=0)
     return render(request, "shop_page/shop.html", {"items": items_to_sell})
 
 
@@ -34,7 +34,11 @@ def buy(request):
         )
     else:
         return JsonResponse({"state": 0, "current_money": user.money})
-    return JsonResponse({"state": 1, "current_money": user.money-item.price})
+    return JsonResponse({
+        "state": 1,
+        "current_money": user.money-item.price,
+        "amount": Item.objects.get(id=item_id).amount
+    })
 
 
 @login_required(login_url="/login")
