@@ -17,6 +17,12 @@ class Item(models.Model):
     description = models.TextField(max_length=2000, verbose_name="Описание")
     image = models.ImageField(upload_to=get_image_path, null=True, verbose_name="Картинка")
     single_buy = models.BooleanField(default=False, verbose_name="Один товар на человека")
+    only_online = models.BooleanField(
+        default=False,
+        verbose_name="Не требует offline выдачи",
+        help_text="Автоматически помечает транзакцию выполненной!")
+    hidden_description = models.BooleanField(
+        default=False, verbose_name="Скрытое описание", help_text="Костыль для фолиантов")
 
     class Meta:
         verbose_name = 'Товар'

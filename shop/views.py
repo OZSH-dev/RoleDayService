@@ -31,6 +31,7 @@ def buy(request):
         Transaction.objects.create(
             caller=request.user,
             item=item,
+            state=1 if item.only_online else 0
         )
     else:
         return JsonResponse({"state": 0, "current_money": user.money})

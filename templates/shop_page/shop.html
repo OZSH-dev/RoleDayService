@@ -20,23 +20,30 @@
             {% for item in items %}
                 <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item">
                     <div class="card h-100">
-                          <h5 class="card-header">
+                        <h5 class="card-header">
                             {{ item.name }}
-                          </h5>
+                        </h5>
                         <a href="#"><img class="card-img-top" src="/media/{{ item.image }}" alt=""></a>
                         <div class="card-body">
-                            <p class="card-text">{{ item.description }}</p>
+                            <p class="card-text">
+                                {% if item.hidden_description %}
+                                    <i>Текст скрыт! Купите документ для его открытия</i>
+                                {% else %}
+                                    {{ item.description }}
+                                {% endif %}
+                            </p>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">На складе <b id="amount_{{ item.id }}">{{ item.amount }}</b> шт.</li>
+                            <li class="list-group-item">На складе <b id="amount_{{ item.id }}">{{ item.amount }}</b> шт.
+                            </li>
                         </ul>
                         <input type="hidden" name="item_id" value="{{ item.id }}">
                         <input id="item_{{ item.id }}" type="submit"
                                class="btn btn-block btn-success" value="Купить за {{ item.price }} ₪"
                                onclick="handle_button(event)"
-                        {% if user.money < item.price %}
-                            disabled
-                        {% endif %}
+                                {% if user.money < item.price %}
+                               disabled
+                                {% endif %}
                         >
                     </div>
                 </div>
@@ -91,7 +98,7 @@
                     if (data["state"] >= 0) {
                         let moneyHeader = $("#navbarDropdownWithMoney");
                         let amountHandler = $("#amount_" + item_id);
-                        if (data["state"] === 1){
+                        if (data["state"] === 1) {
                             let money_field = moneyHeader[0].text.split(" ");
                             money_field[2] = "(" + data["current_money"];
                             amountHandler.html(data["amount"]);
